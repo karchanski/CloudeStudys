@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: smartedu-db
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-smartedu}
+      POSTGRES_USER: ${POSTGRES_USER:-smartedu}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smartedu}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    container_name: smartedu-redis
+    ports:
+      - "6379:6379"
+
+  backend:
+    build:
+      context: ./backend
+    container_name: smartedu-backend
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+      - ./storage:/app/storage
+    depends_on:
+      - db
+      - redis
+    ports:
+      - "8000:8000"
+
+  web:
+    build:
+      context: ./web
+    container_name: smartedu-web
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+
+  bot:
+    build:
+      context: ./telegram_bot
+    container_name: smartedu-bot
+    env_file:
+      - .env
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:
