@@ -149,3 +149,106 @@ Moodle auth endpoint for app login:
   - `password`
   - optional `role` (`teacher` or `student`)
 # CloudeStudys
+Что установить на Windows
+
+Установите Docker Desktop.
+Установите Python 3.11+.
+Установите Node.js LTS.
+Если нужен мобильный клиент, установите Flutter.
+Перезагрузите ПК после установки, чтобы команды появились в PowerShell.
+Шаг 1. Откройте PowerShell в папке проекта
+
+cd C:\путь\до\CloudeStudy
+Пример:
+
+cd C:\Users\YourName\Desktop\CloudeStudy
+Шаг 2. Убедитесь, что есть файл .env
+
+В корне проекта должен быть файл .env.
+
+Если его нет, создайте вручную файл .env в папке проекта и вставьте туда:
+
+POSTGRES_DB=smartedu
+POSTGRES_USER=smartedu
+POSTGRES_PASSWORD=smartedu
+
+DATABASE_URL=postgresql+psycopg2://smartedu:smartedu@db:5432/smartedu
+REDIS_URL=redis://redis:6379/0
+JWT_SECRET=local-dev-secret
+WEB_ORIGIN=http://localhost:3000
+
+NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
+Шаг 3. Запустите Docker Desktop
+
+Дождитесь, пока Docker полностью запустится.
+
+Шаг 4. Поднимите backend, web, postgres, redis и bot
+
+В PowerShell из корня проекта выполните:
+
+docker compose up --build
+Подождите, пока контейнеры соберутся и стартуют.
+
+Шаг 5. Проверьте, что всё запустилось
+
+Откройте в браузере:
+
+http://localhost:8000/docs
+http://localhost:3000
+Если обе страницы открываются, значит backend и web работают.
+
+Шаг 6. Если нужен desktop app для Windows
+
+Откройте новое окно PowerShell:
+
+cd C:\путь\до\CloudeStudy\desktop_app
+py -3 -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
+Важно:
+
+backend уже должен быть запущен
+run_mac.command на Windows не работает
+Шаг 7. Если нужен Telegram bot отдельно
+
+Если bot не стартовал через Docker или хотите запустить руками:
+
+cd C:\путь\до\CloudeStudy\telegram_bot
+py -3 -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python main.py
+Шаг 8. Если нужен mobile app
+
+cd C:\путь\до\CloudeStudy\mobile_app
+flutter pub get
+flutter run
+Если запускаете на телефоне, используйте IP вашего компьютера в сети, например:
+http://192.168.0.10:8000
+
+Если хотите запустить только backend и web без Docker
+
+Backend:
+
+cd C:\путь\до\CloudeStudy\backend
+py -3 -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn api.main:app --reload --host 127.0.0.1 --port 8000
+Web:
+
+cd C:\путь\до\CloudeStudy\web
+npm install
+npm run dev
+Самый короткий сценарий для вас
+
+Установить Docker Desktop, Python, Node.js
+Перейти в папку проекта
+Создать .env
+Выполнить:
+docker compose up --build
+Открыть:
+http://localhost:8000/docs
+http://localhost:3000
+
